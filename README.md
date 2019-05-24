@@ -15,7 +15,25 @@ The ongoing implementation allows to :
  * compare data based on basic metrics, like the Mean Absolute Deviation, the Root Mean Square Error ...
  * process repeatbility tests based on the *Standard Error of measurement* 
 
-since R is a statistical-oriented software, further versions of rCGM2 could propose basic inferential statistical tests.
+Since R is a statistical-oriented software, further versions of rCGM2 could  propose methods integrating basic inferential statistical tests.
+
+
+## Why R is fantastic !
+
+Originaly R was not fantastic at all. The user interface was not intuitive and the programming syntax was difficult to master. 
+That is the past. Thanks to the enthusiast of R users and especially [Hadley Wickham](http://hadley.nz/), R now benefits from a powerful user interface
+called [Rstudio](https://www.rstudio.com/) and packages which could ease your data processing. 
+
+rCGM2 precisely leverages packages : 
+  
+  - dplyr
+  - ggplot2
+  - tidyR
+  
+There are extensive documentation and tutorials on the internet about these packages. For sure, they will accelerate your learning curve
+and remove any reluctance to R. 
+
+
 
 ## installation
 
