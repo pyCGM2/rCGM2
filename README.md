@@ -42,7 +42,7 @@ Download [Rstudio](https://www.rstudio.com/)
 then type
 ```
 library(devtools)
-install_github("pyCGM2", "rCGM2")
+install_github("pyCGM2/rCGM2")
 ```
 
 
