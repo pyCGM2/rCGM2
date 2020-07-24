@@ -8,7 +8,7 @@
 #' convenient descriptive plot panel of gait kinematics for a specific context
 #' @param  descStatsFrameSequence [dataframe] descriptive stats table of all frame sequences
 #' @param  descStatsPhases [dataframe] descriptive stats table of gait phase scalar ()
-#' @param iContext [string] context of the frame sequence
+#' @param EventContext [string] context of the frame sequence
 #' @param colorFactor [string] line color according an independant variable
 #' @param linetypeFactor [string] line type definied according an independant variable
 #' @param normativeData [dataframe] table of a normative dataset
@@ -23,7 +23,7 @@
 #'
 #'
 #'
-descriptiveKinematicGaitPanel<- function(descStatsFrameSequence,descStatsPhases, iContext,
+descriptiveKinematicGaitPanel<- function(descStatsFrameSequence,descStatsPhases, EventContext,
                                          colorFactor=NULL, linetypeFactor=NULL,
                                          normativeData=NULL,stdCorridorFlag=FALSE,
                                          manualLineType=NULL,manualSizeType=NULL){
@@ -31,96 +31,96 @@ descriptiveKinematicGaitPanel<- function(descStatsFrameSequence,descStatsPhases,
 
 
 
-  if (iContext== "Left"){
+  if (EventContext== "Left"){
     prefixe = "L"
-  } else if (iContext== "Right"){
+  } else if (EventContext== "Right"){
     prefixe = "R"
-  } else if (iContext== "Overall"){
+  } else if (EventContext== "Overall"){
     prefixe = ""}
 
   # trace uni
-  Pelvis_X = descriptivePlot(descStatsFrameSequence,  iContext , paste0(prefixe,"PelvisAngles"),"X",
+  Pelvis_X = descriptivePlot(descStatsFrameSequence,  EventContext , paste0(prefixe,"PelvisAngles"),"X",
                              iTitle="Pelvic tilt",yLabel="Deg", legendPosition="none",ylimits=c(0,60),
                              colorFactor = colorFactor,linetypeFactor = linetypeFactor, facetFactor = NULL)
 
-  Pelvis_Y = descriptivePlot(descStatsFrameSequence,  iContext , paste0(prefixe,"PelvisAngles"),"Y",
+  Pelvis_Y = descriptivePlot(descStatsFrameSequence,  EventContext , paste0(prefixe,"PelvisAngles"),"Y",
                              iTitle="Pelvic obliquity",yLabel="Deg", legendPosition="none",ylimits=c(-30,30),
                              colorFactor = colorFactor,linetypeFactor = linetypeFactor, facetFactor = NULL)
-  Pelvis_Z = descriptivePlot(descStatsFrameSequence,  iContext , paste0(prefixe,"PelvisAngles"),"Z",
+  Pelvis_Z = descriptivePlot(descStatsFrameSequence,  EventContext , paste0(prefixe,"PelvisAngles"),"Z",
                              iTitle="Pelvis rotation",yLabel="Deg", legendPosition="none",ylimits=c(-30,30),
                              colorFactor = colorFactor,linetypeFactor = linetypeFactor, facetFactor = NULL)
 
-  Hip_X = descriptivePlot(descStatsFrameSequence,  iContext , paste0(prefixe,"HipAngles"),"X",
+  Hip_X = descriptivePlot(descStatsFrameSequence,  EventContext , paste0(prefixe,"HipAngles"),"X",
                           iTitle="Hip flexion",yLabel="Deg", legendPosition="none",ylimits=c(-20,70),
                           colorFactor = colorFactor,linetypeFactor = linetypeFactor, facetFactor = NULL)
-  Hip_Y = descriptivePlot(descStatsFrameSequence,  iContext , paste0(prefixe,"HipAngles"),"Y",
+  Hip_Y = descriptivePlot(descStatsFrameSequence,  EventContext , paste0(prefixe,"HipAngles"),"Y",
                           iTitle="Hip Abd",yLabel="Deg", legendPosition="none",ylimits=c(-30,30),
                           colorFactor = colorFactor,linetypeFactor = linetypeFactor, facetFactor = NULL)
-  Hip_Z = descriptivePlot(descStatsFrameSequence,  iContext , paste0(prefixe,"HipAngles"),"Z",
+  Hip_Z = descriptivePlot(descStatsFrameSequence,  EventContext , paste0(prefixe,"HipAngles"),"Z",
                           iTitle="Hip rot",yLabel="Deg", legendPosition="none",ylimits=c(-30,30),
                           colorFactor = colorFactor,linetypeFactor = linetypeFactor, facetFactor = NULL)
 
 
-  Knee_X = descriptivePlot(descStatsFrameSequence,  iContext , paste0(prefixe,"KneeAngles"),"X",
+  Knee_X = descriptivePlot(descStatsFrameSequence,  EventContext , paste0(prefixe,"KneeAngles"),"X",
                            iTitle="Knee flexion",yLabel="Deg", legendPosition="none",ylimits=c(-15,75),
                            colorFactor = colorFactor,linetypeFactor = linetypeFactor, facetFactor = NULL)
-  Knee_Y = descriptivePlot(descStatsFrameSequence,  iContext , paste0(prefixe,"KneeAngles"),"Y",
+  Knee_Y = descriptivePlot(descStatsFrameSequence,  EventContext , paste0(prefixe,"KneeAngles"),"Y",
                            iTitle="Knee Abd",yLabel="Deg", legendPosition="none",ylimits=c(-30,30),
                            colorFactor = colorFactor,linetypeFactor = linetypeFactor, facetFactor = NULL)
-  Knee_Z = descriptivePlot(descStatsFrameSequence,  iContext , paste0(prefixe,"KneeAngles"),"Z",
+  Knee_Z = descriptivePlot(descStatsFrameSequence,  EventContext , paste0(prefixe,"KneeAngles"),"Z",
                            iTitle="Knee rot",yLabel="Deg", legendPosition="none",ylimits=c(-30,30),
                            colorFactor = colorFactor,linetypeFactor = linetypeFactor, facetFactor = NULL)
 
 
-  Ankle_X = descriptivePlot(descStatsFrameSequence,  iContext , paste0(prefixe,"AnkleAngles"),"X",
+  Ankle_X = descriptivePlot(descStatsFrameSequence,  EventContext , paste0(prefixe,"AnkleAngles"),"X",
                             iTitle="Ankle flexion",yLabel="Deg", legendPosition="none",ylimits=c(-30,30),
                             colorFactor = colorFactor,linetypeFactor = linetypeFactor, facetFactor = NULL)
-  Ankle_Y = descriptivePlot(descStatsFrameSequence,  iContext , paste0(prefixe,"AnkleAngles"),"Y",
+  Ankle_Y = descriptivePlot(descStatsFrameSequence,  EventContext , paste0(prefixe,"AnkleAngles"),"Y",
                             iTitle="Ankle eversion",yLabel="Deg", legendPosition="none",ylimits=c(-30,30),
                             colorFactor = colorFactor,linetypeFactor = linetypeFactor, facetFactor = NULL)
-  FootProgress_Z = descriptivePlot(descStatsFrameSequence,  iContext , paste0(prefixe,"FootProgressAngles"),"Z",
+  FootProgress_Z = descriptivePlot(descStatsFrameSequence,  EventContext , paste0(prefixe,"FootProgressAngles"),"Z",
                                    iTitle="Foot progression",yLabel="Deg", legendPosition="none",ylimits=c(-30,30),
                                    colorFactor = colorFactor,linetypeFactor = linetypeFactor, facetFactor = NULL)
 
   if (!(is.null(descStatsPhases))){
-    Pelvis_X=addGaitDescriptiveEventsLines(Pelvis_X,descStatsPhases,iContext,
+    Pelvis_X=addGaitDescriptiveEventsLines(Pelvis_X,descStatsPhases,EventContext,
                                            colorFactor=colorFactor, linetypeFactor=linetypeFactor  )
 
-    Pelvis_Y=addGaitDescriptiveEventsLines(Pelvis_Y,descStatsPhases,iContext,
+    Pelvis_Y=addGaitDescriptiveEventsLines(Pelvis_Y,descStatsPhases,EventContext,
                                            colorFactor=colorFactor, linetypeFactor=linetypeFactor  )
 
 
-    Pelvis_Z=addGaitDescriptiveEventsLines(Pelvis_Z,descStatsPhases,iContext,
+    Pelvis_Z=addGaitDescriptiveEventsLines(Pelvis_Z,descStatsPhases,EventContext,
                                            colorFactor=colorFactor, linetypeFactor=linetypeFactor  )
 
-    Hip_X=addGaitDescriptiveEventsLines(Hip_X,descStatsPhases,iContext,
+    Hip_X=addGaitDescriptiveEventsLines(Hip_X,descStatsPhases,EventContext,
                                         colorFactor=colorFactor, linetypeFactor=linetypeFactor  )
 
-    Hip_Y=addGaitDescriptiveEventsLines(Hip_Y,descStatsPhases,iContext,
+    Hip_Y=addGaitDescriptiveEventsLines(Hip_Y,descStatsPhases,EventContext,
                                         colorFactor=colorFactor, linetypeFactor=linetypeFactor  )
 
 
-    Hip_Z=addGaitDescriptiveEventsLines(Hip_Z,descStatsPhases,iContext,
+    Hip_Z=addGaitDescriptiveEventsLines(Hip_Z,descStatsPhases,EventContext,
                                         colorFactor=colorFactor, linetypeFactor=linetypeFactor  )
 
-    Knee_X=addGaitDescriptiveEventsLines(Knee_X,descStatsPhases,iContext,
+    Knee_X=addGaitDescriptiveEventsLines(Knee_X,descStatsPhases,EventContext,
                                          colorFactor=colorFactor, linetypeFactor=linetypeFactor  )
 
-    Knee_Y=addGaitDescriptiveEventsLines(Knee_Y,descStatsPhases,iContext,
+    Knee_Y=addGaitDescriptiveEventsLines(Knee_Y,descStatsPhases,EventContext,
                                          colorFactor=colorFactor, linetypeFactor=linetypeFactor  )
 
 
-    Knee_Z=addGaitDescriptiveEventsLines(Knee_Z,descStatsPhases,iContext,
+    Knee_Z=addGaitDescriptiveEventsLines(Knee_Z,descStatsPhases,EventContext,
                                          colorFactor=colorFactor, linetypeFactor=linetypeFactor  )
 
-    Ankle_X=addGaitDescriptiveEventsLines(Ankle_X,descStatsPhases,iContext,
+    Ankle_X=addGaitDescriptiveEventsLines(Ankle_X,descStatsPhases,EventContext,
                                           colorFactor=colorFactor, linetypeFactor=linetypeFactor  )
 
-    Ankle_Y=addGaitDescriptiveEventsLines(Ankle_Y,descStatsPhases,iContext,
+    Ankle_Y=addGaitDescriptiveEventsLines(Ankle_Y,descStatsPhases,EventContext,
                                           colorFactor=colorFactor, linetypeFactor=linetypeFactor  )
 
 
-    FootProgress_Z=addGaitDescriptiveEventsLines(FootProgress_Z,descStatsPhases,iContext,
+    FootProgress_Z=addGaitDescriptiveEventsLines(FootProgress_Z,descStatsPhases,EventContext,
                                                  colorFactor=colorFactor, linetypeFactor=linetypeFactor  )
 
   }
@@ -380,7 +380,7 @@ descriptiveKinematicGaitPanel_bothContext<- function(descStatsFrameSequence,desc
 #' convenient descriptive plot panel of gait kinetics for a specific context
 #' @param  descStatsFrameSequence [dataframe] descriptive stats table of all frame sequences
 #' @param  descStatsPhases [dataframe] descriptive stats table of gait phase scalar ()
-#' @param iContext [string] context of the frame sequence
+#' @param EventContext [string] context of the frame sequence
 #' @param colorFactor [string] line color according an independant variable
 #' @param linetypeFactor [string] line type definied according an independant variable
 #' @param normativeData [dataframe] table of a normative dataset
@@ -397,7 +397,7 @@ descriptiveKinematicGaitPanel_bothContext<- function(descStatsFrameSequence,desc
 #'
 
 
-descriptiveKineticGaitPanel<- function(descStatsFrameSequence,descStatsPhases, iContext,
+descriptiveKineticGaitPanel<- function(descStatsFrameSequence,descStatsPhases, EventContext,
                                        colorFactor=NULL, linetypeFactor=NULL,
                                        normativeData=NULL,stdCorridorFlag=FALSE,
                                        manualLineType=NULL,manualSizeType=NULL){
@@ -405,11 +405,11 @@ descriptiveKineticGaitPanel<- function(descStatsFrameSequence,descStatsPhases, i
 
 
 
-  if (iContext== "Left"){
+  if (EventContext== "Left"){
     prefixe = "L"
-  } else if (iContext== "Right"){
+  } else if (EventContext== "Right"){
     prefixe = "R"
-  } else if (iContext== "Overall"){
+  } else if (EventContext== "Overall"){
     prefixe = ""}
 
 
@@ -466,47 +466,47 @@ descriptiveKineticGaitPanel<- function(descStatsFrameSequence,descStatsPhases, i
 
 
   if (!(is.null(descStatsPhases))){
-    Hip_X=addGaitDescriptiveEventsLines(Hip_X,descStatsPhases,iContext,
+    Hip_X=addGaitDescriptiveEventsLines(Hip_X,descStatsPhases,EventContext,
                                         colorFactor=colorFactor, linetypeFactor=linetypeFactor  )
 
-    Hip_Y=addGaitDescriptiveEventsLines(Hip_Y,descStatsPhases,iContext,
+    Hip_Y=addGaitDescriptiveEventsLines(Hip_Y,descStatsPhases,EventContext,
                                         colorFactor=colorFactor, linetypeFactor=linetypeFactor  )
 
 
-    Hip_Z=addGaitDescriptiveEventsLines(Hip_Z,descStatsPhases,iContext,
+    Hip_Z=addGaitDescriptiveEventsLines(Hip_Z,descStatsPhases,EventContext,
                                         colorFactor=colorFactor, linetypeFactor=linetypeFactor  )
 
-    Hip_Power=addGaitDescriptiveEventsLines(Hip_Power,descStatsPhases,iContext,
+    Hip_Power=addGaitDescriptiveEventsLines(Hip_Power,descStatsPhases,EventContext,
                                             colorFactor=colorFactor, linetypeFactor=linetypeFactor  )
 
 
-    Knee_X=addGaitDescriptiveEventsLines(Knee_X,descStatsPhases,iContext,
+    Knee_X=addGaitDescriptiveEventsLines(Knee_X,descStatsPhases,EventContext,
                                          colorFactor=colorFactor, linetypeFactor=linetypeFactor  )
 
-    Knee_Y=addGaitDescriptiveEventsLines(Knee_Y,descStatsPhases,iContext,
+    Knee_Y=addGaitDescriptiveEventsLines(Knee_Y,descStatsPhases,EventContext,
                                          colorFactor=colorFactor, linetypeFactor=linetypeFactor  )
 
 
-    Knee_Z=addGaitDescriptiveEventsLines(Knee_Z,descStatsPhases,iContext,
+    Knee_Z=addGaitDescriptiveEventsLines(Knee_Z,descStatsPhases,EventContext,
                                          colorFactor=colorFactor, linetypeFactor=linetypeFactor  )
 
-    Knee_Power=addGaitDescriptiveEventsLines(Knee_Power,descStatsPhases,iContext,
+    Knee_Power=addGaitDescriptiveEventsLines(Knee_Power,descStatsPhases,EventContext,
                                              colorFactor=colorFactor, linetypeFactor=linetypeFactor  )
 
 
 
-    Ankle_X=addGaitDescriptiveEventsLines(Ankle_X,descStatsPhases,iContext,
+    Ankle_X=addGaitDescriptiveEventsLines(Ankle_X,descStatsPhases,EventContext,
                                           colorFactor=colorFactor, linetypeFactor=linetypeFactor  )
 
-    Ankle_Y=addGaitDescriptiveEventsLines(Ankle_Y,descStatsPhases,iContext,
-                                          colorFactor=colorFactor, linetypeFactor=linetypeFactor  )
-
-
-    Ankle_Z=addGaitDescriptiveEventsLines(Ankle_Z,descStatsPhases,iContext,
+    Ankle_Y=addGaitDescriptiveEventsLines(Ankle_Y,descStatsPhases,EventContext,
                                           colorFactor=colorFactor, linetypeFactor=linetypeFactor  )
 
 
-    Ankle_Power=addGaitDescriptiveEventsLines(Ankle_Power,descStatsPhases,iContext,
+    Ankle_Z=addGaitDescriptiveEventsLines(Ankle_Z,descStatsPhases,EventContext,
+                                          colorFactor=colorFactor, linetypeFactor=linetypeFactor  )
+
+
+    Ankle_Power=addGaitDescriptiveEventsLines(Ankle_Power,descStatsPhases,EventContext,
                                               colorFactor=colorFactor, linetypeFactor=linetypeFactor  )
 
   }
@@ -767,6 +767,3 @@ descriptiveKineticGaitPanel_bothContext<- function(descStatsFrameSequence,descSt
   return(fig)
 
 }
-
-
-

@@ -10,14 +10,25 @@
 #'
 #'
 
+print.FrameTable <- function(obj){ print("sucharge")}
 
 constructTableFromXls <- function(fullXlsFiles, sheet){
 
   # construit une dataframe a partir d une feuille de plusieurs ficheirs excel
   table = data.frame()
   for (xlsfile in fullXlsFiles){
-    data = read_excel(xlsfile, sheet = sheet ,col_names = TRUE)
-    table = rbind(table,data)
+
+    out <- tryCatch(
+      {
+        data = read_excel(xlsfile, sheet = sheet ,col_names = TRUE,.name_repair = "minimal")
+        table = rbind(table,data)
+      },
+      error=function(cond) {
+        message(paste("ERROR", xlsfile,"not loaded"))
+        message(cond)
+      }
+    )
+
   }
 
   table$Index = seq(1,nrow(table))

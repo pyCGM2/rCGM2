@@ -87,8 +87,8 @@ getGlobalVariance<-function(varianceTable){
 #
 #
 #  main variance estimation
-# varianceEstimation <-function(Data,Label,Axis,Context,formStr){
-#   if (Context == "Overall"){
+# varianceEstimation <-function(Data,Label,Axis,EventContext,formStr){
+#   if (EventContext == "Overall"){
 #     angles = filter(Data, Label==Label & Axis == Axis )
 #
 #     VarianceAtEachFrames = angles %>%
@@ -105,7 +105,7 @@ getGlobalVariance<-function(varianceTable){
 #
 #
 #   } else {
-#     angles = filter(Data, Label==Label & Axis == Axis & Context==Context)
+#     angles = filter(Data, Label==Label & Axis == Axis & EventContext==EventContext)
 #
 #     VarianceAtEachFrames = angles %>%
 #       gather(Frames,Value,Frame0:Frame100)%>%
@@ -114,11 +114,11 @@ getGlobalVariance<-function(varianceTable){
 #
 #     VarianceAtEachFrames["Label"]=Label
 #     VarianceAtEachFrames["Axis"]=Axis
-#     VarianceAtEachFrames["Context"]=Context
+#     VarianceAtEachFrames["EventContext"]=EventContext
 #
 #
 #     VarianceGlobal = VarianceAtEachFrames  %>%
-#       group_by(Label,Axis,Context,vari.grp) %>%
+#       group_by(Label,Axis,EventContext,vari.grp) %>%
 #       summarize( sd =  round(sqrt(mean(vari.sdcor^2)),1))
 #   }
 #

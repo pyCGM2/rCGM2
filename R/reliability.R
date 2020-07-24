@@ -11,7 +11,7 @@
 #'
 ComputeSessionAverage<-function(table){
   outDf = table %>%
-  group_by(Participant,Assessor,Session,Label,Axis,Context,Frames)%>%
+  group_by(Participant,Assessor,Session,Label,Axis,EventContext,Frames)%>%
   summarise(Avg = mean(Value,na.rm = TRUE))
   return(outDf)
 }
@@ -38,18 +38,18 @@ withinSubjectStandardDeviation <-function(sessionAverage,Anova=FALSE){
 
   if (!Anova){
     frames = sessionAverage %>%
-    group_by(Participant,Label,Axis,Context,Frames)%>%
+    group_by(Participant,Label,Axis,EventContext,Frames)%>%
     summarize(Sem = sd(Avg))
   } else {
     frames = sessionAverage %>%
-      group_by(Participant,Label,Axis,Context,Frames)%>%
+      group_by(Participant,Label,Axis,EventContext,Frames)%>%
       do(anova = aov(Avg ~ Assessor, data=.))%>%
       mutate(Sem = sigma(anova))
   }
 
 
   framesAvg = frames %>%
-    group_by(Participant,Label,Axis,Context)%>%
+    group_by(Participant,Label,Axis,EventContext)%>%
     summarise(SemAvg = mean(Sem,na.rm = TRUE))
 
 
@@ -77,17 +77,17 @@ withinOperatorStandardDeviation<-function(sessionAverage,Anova=FALSE){
   if (!Anova){
 
     frames = sessionAverage %>%
-      group_by(Participant,Assessor,Label,Axis,Context,Frames)%>%
+      group_by(Participant,Assessor,Label,Axis,EventContext,Frames)%>%
       summarise(Sem = sd(Avg,na.rm = TRUE))
   } else  {
 
     frames = sessionAverage %>%
-      group_by(Participant,Assessor,Label,Axis,Context,Frames)%>%
+      group_by(Participant,Assessor,Label,Axis,EventContext,Frames)%>%
       summarise(Sem = sd(Avg))
   }
 
   framesAvg = frames %>%
-    group_by(Participant,Assessor,Label,Axis,Context)%>%
+    group_by(Participant,Assessor,Label,Axis,EventContext)%>%
     summarise(SemAvg = mean(Sem,na.rm = TRUE))
 
 
@@ -109,12 +109,12 @@ Sem_byAssessor<-function(sessionAverage,Anova=TRUE){
 
   if (Anova){
     frames = sessionAverage %>%
-      group_by(Assessor,Label,Axis,Context,Frames)%>%
+      group_by(Assessor,Label,Axis,EventContext,Frames)%>%
       do(anova = aov(Avg ~ Participant, data=.))%>%
       mutate(Sem = sigma(anova,na.rm = TRUE))
 
     framesAvg = frames %>%
-      group_by(Assessor,Label,Axis,Context)%>%
+      group_by(Assessor,Label,Axis,EventContext)%>%
       summarise(SemAvg = mean(Sem,na.rm = TRUE))
 
 
@@ -124,11 +124,11 @@ Sem_byAssessor<-function(sessionAverage,Anova=TRUE){
 
     #SEM by assessor
     frames = wod$atFrame %>%
-      group_by(Assessor,Label,Axis,Context,Frames)%>%
+      group_by(Assessor,Label,Axis,EventContext,Frames)%>%
       summarise(Sem = sqrt(sum(Sem_wod^2)/length(Sem_wod)))
 
     framesAvg = frames %>%
-      group_by(Assessor,Label,Axis,Context)%>%
+      group_by(Assessor,Label,Axis,EventContext)%>%
       summarise(SemAvg = mean(Sem,na.rm = TRUE))
 
   }
@@ -153,12 +153,12 @@ Sem_allAssessors<-function(sessionAverage, Anova=TRUE){
 
 
     frames = sessionAverage %>%
-      group_by(Label,Axis,Context,Frames)%>%
+      group_by(Label,Axis,EventContext,Frames)%>%
       do(anova = aov(Avg ~ Participant, data=.))%>%
       mutate(Sem = sigma(anova,na.rm = TRUE))
 
     framesAvg = frames %>%
-      group_by(Label,Axis,Context)%>%
+      group_by(Label,Axis,EventContext)%>%
       summarise(SemAvg = mean(Sem,na.rm = TRUE))
 
     } else {
@@ -168,12 +168,12 @@ Sem_allAssessors<-function(sessionAverage, Anova=TRUE){
 
     #all Ass
     frames = wsd$atFrame %>%
-      group_by(Label,Axis,Context,Frames)%>%
+      group_by(Label,Axis,EventContext,Frames)%>%
       summarise(Sem = sqrt(sum(Sem_wsd^2)/length(Sem_wsd)))
 
 
     framesAvg = frames %>%
-      group_by(Label,Axis,Context)%>%
+      group_by(Label,Axis,EventContext)%>%
       summarise(SemAvg = mean(Sem,na.rm = TRUE))
     }
 
@@ -198,23 +198,23 @@ Sem_allAssessors<-function(sessionAverage, Anova=TRUE){
 betweenAssessors<-function(sessionAverage){
 
   assessor_frames = sessionAverage %>%
-    group_by(Assessor,Label,Axis,Context,Frames)%>%
+    group_by(Assessor,Label,Axis,EventContext,Frames)%>%
     summarise(Average = mean(Avg,na.rm = TRUE))
 
 
   assessor_framesAvg = assessor_frames %>%
-    group_by(Assessor,Label,Axis,Context)%>%
+    group_by(Assessor,Label,Axis,EventContext)%>%
     summarise(FrameAverage = mean(Average,na.rm = TRUE))
 
 
 
   allAssessors_frames = assessor_frames %>%
-    group_by(Frames,Label,Axis,Context)%>%
+    group_by(Frames,Label,Axis,EventContext)%>%
     summarise(All = mean(Average), Agreement = max(Average)-min(Average))
 
 
   allAssessors_framesAvg = allAssessors_frames %>%
-    group_by(Label,Axis,Context)%>%
+    group_by(Label,Axis,EventContext)%>%
     summarise(AllAverage = mean(All), FrameAgreement = mean(Agreement))
 
 
@@ -242,7 +242,7 @@ betweenAssessorsReport<-function(betweenAssessorAssement){
   allAssessors = betweenAssessorAssement$allAssessors_overall
 
 
-  byAssessorJoin = left_join(byAssessor,allAssessors, by=c("Label","Axis","Context"))
+  byAssessorJoin = left_join(byAssessor,allAssessors, by=c("Label","Axis","EventContext"))
 
 
   byAssessorJoin = byAssessorJoin%>%
@@ -311,6 +311,3 @@ accrossAssessorReport<-function(semAllAssessordf,nAssesor,nParticipant){
 
 
 }
-
-
-

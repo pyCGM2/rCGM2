@@ -18,14 +18,14 @@ MeanAbsoluteVariability <- function(table){
   # compute mav for each comparison factor
 
   wide_Table = table %>%
-    select(ComparisonFactor,Id,Label,Axis,Cycle,Context,Frame0:Frame100)%>%
+    select(ComparisonFactor,Id,Label,Axis,Cycle,EventContext,Frame0:Frame100)%>%
     gather(Frames, Value, Frame0:Frame100)
 
 
   out = wide_Table%>%
-    group_by(ComparisonFactor,Id,Label,Context,Axis,Frames)%>%
+    group_by(ComparisonFactor,Id,Label,EventContext,Axis,Frames)%>%
     summarise(diff = max(Value)-min(Value))%>%
-    group_by(ComparisonFactor,Label,Context,Axis)%>%
+    group_by(ComparisonFactor,Label,EventContext,Axis)%>%
     summarize(MAV = mean(diff))
 
   return (out)
@@ -49,10 +49,10 @@ MeanAbsoluteVariability <- function(table){
 MinDetectableChange <- function(table, dependantVariables){
 
   gkt = table  %>%
-    select("Id","Label","Context","Axis","Cycle","ComparisonFactor",dependantVariables)%>%
+    select("Id","Label","EventContext","Axis","Cycle","ComparisonFactor",dependantVariables)%>%
     gather_("Factor", "Values",  dependantVariables)%>%
     mutate(Factor = paste0("Sem_",Factor))%>%
-    group_by(Label,Axis,Context,Factor)%>%
+    group_by(Label,Axis,EventContext,Factor)%>%
     do(anova = aov(Values ~ ComparisonFactor, data=.))%>%
     mutate(Sem = 1.96* sqrt(2)*sigma(anova))%>%
     select(-anova)%>%
@@ -118,7 +118,7 @@ computeMetrics_onFrameSequences<- function(table,metricsFunction,modality1,modal
 
 
   wide_Table = table %>%
-    select(ComparisonFactor,Id,Label,Axis,Cycle,Context,Frame0:Frame100)%>%
+    select(ComparisonFactor,Id,Label,Axis,Cycle,EventContext,Frame0:Frame100)%>%
     gather(Frames, Value, Frame0:Frame100)%>%
     unite(temp, ComparisonFactor, Frames) %>%
     spread(temp, Value)
@@ -130,7 +130,7 @@ computeMetrics_onFrameSequences<- function(table,metricsFunction,modality1,modal
     rowwise()%>%
     do(data.frame(metricsFunction = apply_metrics(., metricsFunction,modality1,modality2,frameIndexes = frameIndexes)))%>%
     bind_cols(wide_Table%>%
-                select(Id,Label,Axis,Cycle,Context))
+                select(Id,Label,Axis,Cycle,EventContext))
 
   if (is.null(comparisonLabel)){comparisonLabel = paste0(modality1,"_",modality2)}
   out["ComparisonLabel"] = comparisonLabel
@@ -149,7 +149,7 @@ computeMetrics_onFrameSequences<- function(table,metricsFunction,modality1,modal
 #' @param table [dataframe] all-cycle table
 #' @param metricsFunction [string] metrics ( eg, mae, rmse) to apply
 #' @param Label [string] label of the frame sequence
-#' @param Context [string] context of the frame sequence
+#' @param EventContext [string] context of the frame sequence
 #' @param Axes [string] axis of the frame sequence
 #' @param modality1 [string] 1st selected modality of the independant variable (ComparisonFactor)
 #' @param modality2 [string] 2nd selected modality of the independant variable (ComparisonFactor)
@@ -162,7 +162,7 @@ computeMetrics_onFrameSequences<- function(table,metricsFunction,modality1,modal
 #' need construction of the factor ComparisonFactor
 
 
-computeMetrics_onFrameSequence <- function(table,metricsFunction,Label,Context,Axes,modality1,modality2,comparisonLabel=NULL){
+computeMetrics_onFrameSequence <- function(table,metricsFunction,Label,EventContext,Axes,modality1,modality2,comparisonLabel=NULL){
 
   #
 
@@ -172,8 +172,8 @@ computeMetrics_onFrameSequence <- function(table,metricsFunction,Label,Context,A
 
   for (Axis in Axes){
 
-    table1 = filter(table,ComparisonFactor == modality1 & Label == Label & Axis == Axis[1] & Context == Context)
-    table2 = filter(table,ComparisonFactor == modality2 & Label == Label & Axis == Axis[1] & Context == Context)
+    table1 = filter(table,ComparisonFactor == modality1 & Label == Label & Axis == Axis[1] & EventContext == EventContext)
+    table2 = filter(table,ComparisonFactor == modality2 & Label == Label & Axis == Axis[1] & EventContext == EventContext)
 
     d1 = select(table1,starts_with("Frame0"): ends_with("Frame100"))
     d2 = select(table2,starts_with("Frame0"): ends_with("Frame100"))
@@ -185,7 +185,7 @@ computeMetrics_onFrameSequence <- function(table,metricsFunction,Label,Context,A
     for (i in 1:nrow(d1))
       value[i] =  eval(parse(text= paste0("Metrics::",metricsFunction,"(d1[i,],d2[i,])")))
 
-    out = bind_rows(out,data.frame("Label" = Label, "Axis" = Axis, "Context" = Context,
+    out = bind_rows(out,data.frame("Label" = Label, "Axis" = Axis, "EventContext" = EventContext,
                                    "comparison" = comparisonLabel,
                                    metricsFunction =  value))
   }
@@ -250,7 +250,7 @@ LinearFit_onFrameSequences<- function(table,modality1,modality2,comparisonLabel=
 
 
   wide_Table = table %>%
-    select(ComparisonFactor,Id,Label,Axis,Cycle,Context,Frame0:Frame100)%>%
+    select(ComparisonFactor,Id,Label,Axis,Cycle,EventContext,Frame0:Frame100)%>%
     gather(Frames, Value, Frame0:Frame100)%>%
     unite(temp, ComparisonFactor, Frames) %>%
     spread(temp, Value)
@@ -262,7 +262,7 @@ LinearFit_onFrameSequences<- function(table,modality1,modality2,comparisonLabel=
     rowwise()%>%
     do(data.frame(a0 = apply_lm(.,modality1,modality2,frameIndexes)$a0, a1 = apply_lm(.,modality1,modality2,frameIndexes = frameIndexes)$a1, R2 = apply_lm(.,factor1,factor2,frameIndexes = frameIndexes)$R2))%>%
     bind_cols(wide_Table%>%
-                select(Id,Label,Axis,Cycle,Context))
+                select(Id,Label,Axis,Cycle,EventContext))
 
   if (is.null(comparisonLabel)){comparisonLabel = paste0(modality1,"_",modality2)}
   out["ComparisonLabel"] = comparisonLabel
@@ -317,7 +317,7 @@ computeMetrics_onScalar<- function(table,metricsFunction,DiscreteLabel,modality1
 
 
   wide_Table = table %>%
-    select("ComparisonFactor","Id","Label","Axis","Cycle","Context",DiscreteLabel)%>%
+    select("ComparisonFactor","Id","Label","Axis","Cycle","EventContex",DiscreteLabel)%>%
     gather_("Method", "Value", DiscreteLabel)%>%
     unite_("temp", "ComparisonFactor", DiscreteLabel) %>%
     spread(temp, Value)
@@ -325,7 +325,7 @@ computeMetrics_onScalar<- function(table,metricsFunction,DiscreteLabel,modality1
 
 
   out = wide_Table%>%
-    group_by(Id,Label,Context,Axis,Cycle)%>%
+    group_by(Id,Label,EventContex,Axis,Cycle)%>%
     do(data.frame(metricsFunction = apply_metrics(., metricsFunction,modality1,modality2)))
 
   if (is.null(comparisonLabel)){comparisonLabel = paste0(modality1,"_",modality2)}
@@ -335,6 +335,3 @@ computeMetrics_onScalar<- function(table,metricsFunction,DiscreteLabel,modality1
 
   return(out)
 }
-
-
-

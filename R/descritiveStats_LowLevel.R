@@ -16,9 +16,9 @@
 computeDescritiveStats<- function(table,dependantVariables,groupByList,bySubjectFlag=TRUE){
 
   if (bySubjectFlag) {
-    groupByList = c(groupByList,"Id","Context")
+    groupByList = c(groupByList,"Id","EventContext")
   } else{
-    groupByList = c(groupByList,"Context")
+    groupByList = c(groupByList,"EventContext")
   }
 
 
@@ -77,7 +77,7 @@ gather_descritiveStats<- function(descStatTable,dependantVariables,groupByList){
 
   meanGather$Stats=NULL
   sdGather$Stats=NULL
-  final = left_join(meanGather,sdGather, by=c("Id",dependantVariables,"Context","Factor") )
+  final = left_join(meanGather,sdGather, by=c("Id",dependantVariables,"EventContext","Factor") )
 
   return(final)
 }
@@ -99,9 +99,9 @@ gather_descritiveStats<- function(descStatTable,dependantVariables,groupByList){
 computeDescritiveStats_onFrameSequences<- function(table,groupByList,bySubjectFlag=TRUE){
 
   if (bySubjectFlag) {
-    groupByList = c(groupByList,"Id","Context","Label","Axis")
+    groupByList = c(groupByList,"Id","EventContext","Label","Axis")
   } else{
-    groupByList = c(groupByList,"Context","Label","Axis")
+    groupByList = c(groupByList,"EventContext","Label","Axis")
   }
 
 

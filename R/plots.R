@@ -4,7 +4,7 @@
 #' plot all cycle of a frame sequence
 #' @param  table [dataframe] all-cycle table
 #' @param iLabel [string] label of the frame sequence
-#' @param iContext [string] context of the frame sequence
+#' @param iEventContext [string] context of the frame sequence
 #' @param iAxis [string] axis of the frame sequence
 #' @param iTitle [string] plot title
 #' @param yLabel [string] label of the Y-axis
@@ -19,7 +19,7 @@
 #'
 #' @section Warning:
 #'
-consistencyPlot<-function(table, iContext , iLabel,iAxis,
+consistencyPlot<-function(table, iEventContext , iLabel,iAxis,
                           iTitle="",yLabel="Deg", legendPosition = "none",
                           ylimits=NULL,
                           colorFactor=NULL,facetFactor=NULL,linetypeFactor=NULL){
@@ -29,7 +29,7 @@ consistencyPlot<-function(table, iContext , iLabel,iAxis,
 
 
   iData = filter(gatherFramesTbl,
-                 Label == iLabel & Axis == iAxis  & Context == iContext)
+                 Label == iLabel & Axis == iAxis  & EventContext == iEventContext)
 
   fig = ggplot() +
     scale_x_discrete(name="Time Normalized")+
@@ -47,7 +47,7 @@ consistencyPlot<-function(table, iContext , iLabel,iAxis,
           legend.position=legendPosition)
 
   iData$inter <- interaction(iData$Index) # !!!! I spent lot of time to find that
-  #iData$inter <- interaction(iData$Id,iData$Label,iData$Context,iData$Axis,iData$ComparisonFactor, iData$Cycle) # !!!! I spent lot of time to find that
+  #iData$inter <- interaction(iData$Id,iData$Label,iData$EventContext,iData$Axis,iData$ComparisonFactor, iData$Cycle) # !!!! I spent lot of time to find that
 
   if ((!is.null(colorFactor)) &&   (!is.null(linetypeFactor))) {
 
@@ -75,7 +75,7 @@ consistencyPlot<-function(table, iContext , iLabel,iAxis,
 
     fig = fig + geom_line(data=iData,
                           aes_string(x="Frame",y="Values",
-                                     color = "Context",
+                                     color = "EventContext",
                                      group = "inter"),
                           size=0.5)
 
@@ -90,7 +90,7 @@ consistencyPlot<-function(table, iContext , iLabel,iAxis,
 #' plot descriptive statistics of a frame sequence
 #' @param  descStatsFrameSequence [dataframe] descriptive stats table of frame sequence
 #' @param iLabel [string] label of the frame sequence
-#' @param iContext [string] context of the frame sequence
+#' @param iEventContext [string] context of the frame sequence
 #' @param iAxis [string] axis of the frame sequence
 #' @param iTitle [string] plot title
 #' @param yLabel [string] label of the Y-axis
@@ -106,17 +106,17 @@ consistencyPlot<-function(table, iContext , iLabel,iAxis,
 #' @section Warning:
 #'
 #'
-descriptivePlot<-function(descStatsFrameSequence, iContext , iLabel,iAxis,
+descriptivePlot<-function(descStatsFrameSequence, iEventContext , iLabel,iAxis,
                           iTitle="",yLabel="Deg", legendPosition = "none",
                           colorFactor=NULL,facetFactor=NULL,linetypeFactor=NULL,
                           ylimits=NULL,
                           lineWidth=0.5){
 
-  gatherFramesTbl = gather_descriptiveStats_FrameSequences( descStatsFrameSequence)
+  gatherFramesTbl = transform_frameData_descritiveStats(descStatsFrameSequence)
 
   iData = filter(gatherFramesTbl,
                  Stats == "mean" &
-                   Label == iLabel & Axis == iAxis & Context == iContext )
+                   Label == iLabel & Axis == iAxis & EventContext == iEventContext )
 
 
 
@@ -145,7 +145,7 @@ descriptivePlot<-function(descStatsFrameSequence, iContext , iLabel,iAxis,
   if ((!is.null(colorFactor)) &&   (!is.null(linetypeFactor))) {
 
       fig = fig + geom_line(data=iData,
-                          aes_string(x="Frame",y="Values",
+                          aes_string(x="Frame",y="Value",
                                      color = colorFactor,
                                      linetype = linetypeFactor,
                                      group = "inter"),
@@ -153,14 +153,14 @@ descriptivePlot<-function(descStatsFrameSequence, iContext , iLabel,iAxis,
   } else if ((!is.null(colorFactor)) &&   (is.null(linetypeFactor))){
 
     fig = fig + geom_line(data=iData,
-                          aes_string(x="Frame",y="Values",
+                          aes_string(x="Frame",y="Value",
                                      color = colorFactor,
                                      group = "inter"),
                           size=lineWidth)
   } else if ((is.null(colorFactor)) &&   !(is.null(linetypeFactor))){
 
   fig = fig + geom_line(data=iData,
-                        aes_string(x="Frame",y="Values",
+                        aes_string(x="Frame",y="Value",
                                    linetype = linetypeFactor,
                                    group = "inter"),
                         size=lineWidth)
@@ -168,14 +168,14 @@ descriptivePlot<-function(descStatsFrameSequence, iContext , iLabel,iAxis,
 
 
     fig = fig + geom_line(data=iData,
-                          aes_string(x="Frame",y="Values",
-                                     color = "Context",
+                          aes_string(x="Frame",y="Value",
+                                     color = "EventContext",
                                      group = "inter"),
                           size=lineWidth)
 
-    if (iContext=="Left"){
+    if (iEventContext=="Left"){
       fig = fig + scale_color_manual(values=c("red"))
-    } else if (iContext=="Right"){
+    } else if (iEventContext=="Right"){
       fig = fig + scale_color_manual(values=c("blue"))
       }
 
@@ -245,7 +245,7 @@ consistencyPlot_bothContext<-function(table,  LabelLeft,AxisLeft, LabelRight,Axi
 
   fig = fig + geom_line(data=iData,
                         aes(x=Frame,y=Values,
-                            color = Context,
+                            color = EventContext,
                             group=interaction(Index)),
                         size=0.5)
 
@@ -292,11 +292,11 @@ descriptivePlot_bothContext<-function(descStatsFrameSequence,  LabelLeft,AxisLef
 
   iData_L = filter(gatherFramesTbl,
                    Stats == "mean" &
-                     Label == LabelLeft & Axis == AxisLeft & Context == "Left" )
+                     Label == LabelLeft & Axis == AxisLeft & EventContext == "Left" )
 
   iData_R = filter(gatherFramesTbl,
                    Stats == "mean" &
-                     Label == LabelRight & Axis == AxisRight & Context == "Right")
+                     Label == LabelRight & Axis == AxisRight & EventContext == "Right")
 
 
 
@@ -320,7 +320,7 @@ descriptivePlot_bothContext<-function(descStatsFrameSequence,  LabelLeft,AxisLef
 
   fig = fig + geom_line(data=iData,
                         aes(x=Frame,y=Values,
-                            color = Context,
+                            color = EventContext,
                             group=interaction(Index)),
                         size=0.5)
 
@@ -346,7 +346,7 @@ descriptivePlot_bothContext<-function(descStatsFrameSequence,  LabelLeft,AxisLef
 #' @param  [fig] ggplot2 figure
 #' @param  [descStatsPhaseTable] descriptive stats table of gait phase scalar
 #' (must include c("stancePhase","doubleStance1","doubleStance2")
-#' @param  [Context] selected context
+#' @param  [EventContext] selected context
 #' @param colorFactor [string] line color according an independant variable
 #' @param linetypeFactor [string] line type definied according an independant variable
 #'
@@ -355,44 +355,45 @@ descriptivePlot_bothContext<-function(descStatsFrameSequence,  LabelLeft,AxisLef
 #'
 #' @section Warning:
 #'
-addGaitDescriptiveEventsLines<-function(fig,descStatsPhaseTable,iContext,
+addGaitDescriptiveEventsLines<-function(fig,descStatsPhaseTable,iEventContext,
                                         colorFactor=NULL,linetypeFactor=NULL ){
 
 
   if ("ComparisonFactor" %ni% names(descStatsPhaseTable))
   {
-    descStatsPhaseTable$ComparisonFactor =  descStatsPhaseTable$Context
+    descStatsPhaseTable$ComparisonFactor =  descStatsPhaseTable$EventContext
   }
 
 
-  gaitEventsTableFilt =  filter(descStatsPhaseTable, Context == iContext)
+  gaitEventsTableFilt =  filter(descStatsPhaseTable, EventContext == iEventContext)
 
 
+  gaitEvents = transform_scalar_DescriptiveStats(gaitEventsTableFilt,STP)
 
-  gaitEvents = gather_descritiveStats(gaitEventsTableFilt,"ComparisonFactor",c("stancePhase","doubleStance1","doubleStance2"))
+  gaitEvents = filter(gaitEvents, Stats == "mean" )
 
 
   if ((!is.null(colorFactor)) &&   (!is.null(linetypeFactor))) {
-    fig = fig + geom_vline( data = filter(gaitEvents,Factor == "stancePhase"),
-                            aes_string(xintercept="Mean",
+    fig = fig + geom_vline( data = filter(gaitEvents,Variable  == "stancePhase"),
+                            aes_string(xintercept="Value",
                                 color=colorFactor,
                                 linetype = linetypeFactor),show_guide = FALSE)
 
   } else   if (!(is.null(colorFactor)) &&   (is.null(linetypeFactor))) {
-    fig = fig + geom_vline( data = filter(gaitEvents,Factor == "stancePhase"),
-                            aes_string(xintercept="Mean",
+    fig = fig + geom_vline( data = filter(gaitEvents,Variable  == "stancePhase"),
+                            aes_string(xintercept="Value",
                                        color=colorFactor),show_guide = FALSE)
 
   } else  if ((is.null(colorFactor)) &&   !(is.null(linetypeFactor))) {
 
-    fig = fig + geom_vline( data = filter(gaitEvents,Factor == "stancePhase"),
-                            aes_string(xintercept="Mean",
+    fig = fig + geom_vline( data = filter(gaitEvents,Variable  == "stancePhase"),
+                            aes_string(xintercept="Value",
                                        linetype=linetypeFactor),show_guide = FALSE)
   } else {
 
-    fig = fig + geom_vline( data = filter(gaitEvents,Factor == "stancePhase"),
-                            aes_string(xintercept="Mean",
-                                       color="Context"),show_guide = FALSE)
+    fig = fig + geom_vline( data = filter(gaitEvents,Variable  == "stancePhase"),
+                            aes_string(xintercept="Value",
+                                       color="EventContext"),show_guide = FALSE)
 
   }
 
@@ -418,7 +419,7 @@ geom_vline_descriptiveEvents_bothContext<-function(descStatsPhaseTable){
 
   if ("ComparisonFactor" %ni% names(descStatsPhaseTable))
   {
-    descStatsPhaseTable$ComparisonFactor =  descStatsPhaseTable$Context
+    descStatsPhaseTable$ComparisonFactor =  descStatsPhaseTable$EventContext
   }
 
 
@@ -465,13 +466,15 @@ geom_normative_ribbon <- function(data) {
 #'
 #' @section Note:
 #' programming as a new geom ( see https://rpubs.com/hadley/97970)
-geom_stdRibbon <- function(table) {
+geom_stdRibbon <- function(table,bySubjectFlag) {
 
 
-  data = getStdCorridorLimits_fromDescStatFrameSequences(table)
+  data = getStdCorridorLimits(table)
+
+
   if ("ComparisonFactor" %ni% names(data))
   {
-    data$ComparisonFactor =data$Context
+    data$ComparisonFactor =data$EventContext
   }
 
   geom_ribbon(data = data,
@@ -480,3 +483,4 @@ geom_stdRibbon <- function(table) {
 
 
 }
+
